@@ -3,22 +3,22 @@ import os
 
 import aws_cdk as cdk
 
-from blue.blue_stack import BlueStack
+from velociraptor.velociraptor_stack import VelociraptorStack
 
 app = cdk.App()
 
-BlueStack(
-    app, 'BlueStack',
+VelociraptorStack(
+    app, 'VelociraptorStack',
     env = cdk.Environment(
         account = os.getenv('CDK_DEFAULT_ACCOUNT'),
-        region = os.environ['CDK_DEFAULT_REGION']
+        region = 'us-east-1'
     ),
     synthesizer = cdk.DefaultStackSynthesizer(
         qualifier = '4n6ir'
     )
 )
 
-cdk.Tags.of(app).add('Alias','Velociraptor')
-cdk.Tags.of(app).add('GitHub','https://github.com/4n6ir/blue.git')
+cdk.Tags.of(app).add('Alias','lukach.net')
+cdk.Tags.of(app).add('GitHub','https://github.com/jblukach/velociraptor')
 
 app.synth()

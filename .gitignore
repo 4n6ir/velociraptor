@@ -8,6 +8,4 @@ __pycache__
 # CDK asset staging directory
 .cdk.staging
 cdk.out
-.~c9*
-*blue.sh*
-*cdk.context.json*
+cdk.context.json
