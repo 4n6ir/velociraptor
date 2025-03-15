@@ -126,13 +126,7 @@ class VelociraptorHost(Stack):
                 _ec2.BlockDevice(
                     device_name = '/dev/sda1',
                     volume = _ec2.BlockDeviceVolume.ebs(
-                        8, encrypted = True
-                    )
-                ),
-                _ec2.BlockDevice(
-                    device_name = '/dev/sdf',
-                    volume = _ec2.BlockDeviceVolume.ebs(
-                        12, encrypted = True
+                        20, encrypted = True
                     )
                 )
             ]
