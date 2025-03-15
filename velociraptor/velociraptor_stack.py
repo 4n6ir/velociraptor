@@ -31,10 +31,11 @@ class VelociraptorStack(Stack):
         vpc = _ec2.Vpc(
             self, 'vpc',
             ip_addresses = _ec2.IpAddresses.cidr('10.255.255.0/24'),
-            max_azs = 1,
-            nat_gateways = 0,
+            ip_protocol = _ec2.IpProtocol.DUAL_STACK,
             enable_dns_hostnames = True,
             enable_dns_support = True,
+            nat_gateways = 0,
+            max_azs = 1,
             subnet_configuration = [
                 _ec2.SubnetConfiguration(
                     cidr_mask = 28,
@@ -94,43 +95,21 @@ class VelociraptorStack(Stack):
             tier = _ssm.ParameterTier.STANDARD
         )
 
-    ### NACL ###
-
-        nacl = _ec2.NetworkAcl(
-            self, 'nacl',
-            vpc = vpc
-        )
-
-        nacl.add_entry(
-            'ingress100',
-            rule_number = 100,
-            cidr = _ec2.AclCidr.ipv4('0.0.0.0/0'),
-            traffic = _ec2.AclTraffic.all_traffic(),
-            rule_action = _ec2.Action.ALLOW,
-            direction = _ec2.TrafficDirection.INGRESS
-        )
-
-        nacl.add_entry(
-            'egress100',
-            rule_number = 100,
-            cidr = _ec2.AclCidr.ipv4('0.0.0.0/0'),
-            traffic = _ec2.AclTraffic.all_traffic(),
-            rule_action = _ec2.Action.ALLOW,
-            direction = _ec2.TrafficDirection.EGRESS
-        )
-
     ### SG ###
 
         sg = _ec2.SecurityGroup(
             self, 'sg',
             vpc = vpc,
             allow_all_outbound = True,
+            allow_all_ipv6_outbound = True,
             description = 'Velociraptor',
             security_group_name = 'Velociraptor'
         )
 
         sg.add_ingress_rule(_ec2.Peer.any_ipv4(), _ec2.Port.tcp(80), 'HTTP')
+        sg.add_ingress_rule(_ec2.Peer.any_ipv6(), _ec2.Port.tcp(80), 'HTTP')
         sg.add_ingress_rule(_ec2.Peer.any_ipv4(), _ec2.Port.tcp(443), 'HTTPS')
+        sg.add_ingress_rule(_ec2.Peer.any_ipv6(), _ec2.Port.tcp(443), 'HTTPS')
 
         sgparameter = _ssm.StringParameter(
             self, 'sgparameter',

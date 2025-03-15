@@ -122,7 +122,7 @@ class VelociraptorHost(Stack):
             security_group = sg,
             require_imdsv2 = True,
             propagate_tags_to_volume_on_creation = True,
-           block_devices = [
+            block_devices = [
                 _ec2.BlockDevice(
                     device_name = '/dev/sda1',
                     volume = _ec2.BlockDeviceVolume.ebs(
