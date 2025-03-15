@@ -119,7 +119,7 @@ class VelociraptorStack(Stack):
             direction = _ec2.TrafficDirection.EGRESS
         )
 
-    ### SECURITY GROUP ###
+    ### SG ###
 
         sg = _ec2.SecurityGroup(
             self, 'sg',
@@ -140,7 +140,7 @@ class VelociraptorStack(Stack):
             tier = _ssm.ParameterTier.STANDARD
         )
 
-    ### STATIC IP ###
+    ### EIP ###
 
         eip = _ec2.CfnEIP(
             self, 'eip'
