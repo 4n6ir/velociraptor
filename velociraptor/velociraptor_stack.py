@@ -31,7 +31,6 @@ class VelociraptorStack(Stack):
         vpc = _ec2.Vpc(
             self, 'vpc',
             ip_addresses = _ec2.IpAddresses.cidr('10.255.255.0/24'),
-            ip_protocol = _ec2.IpProtocol.DUAL_STACK,
             enable_dns_hostnames = True,
             enable_dns_support = True,
             nat_gateways = 0,
@@ -101,15 +100,12 @@ class VelociraptorStack(Stack):
             self, 'sg',
             vpc = vpc,
             allow_all_outbound = True,
-            allow_all_ipv6_outbound = True,
             description = 'Velociraptor',
             security_group_name = 'Velociraptor'
         )
 
         sg.add_ingress_rule(_ec2.Peer.any_ipv4(), _ec2.Port.tcp(80), 'HTTP')
-        sg.add_ingress_rule(_ec2.Peer.any_ipv6(), _ec2.Port.tcp(80), 'HTTP')
         sg.add_ingress_rule(_ec2.Peer.any_ipv4(), _ec2.Port.tcp(443), 'HTTPS')
-        sg.add_ingress_rule(_ec2.Peer.any_ipv6(), _ec2.Port.tcp(443), 'HTTPS')
 
         sgparameter = _ssm.StringParameter(
             self, 'sgparameter',
