@@ -1,4 +1,4 @@
-# blue
+# velociraptor
 
 **Blue** provides Infrastructure as Code for secure deployment of **Velociraptor** into AWS.
 

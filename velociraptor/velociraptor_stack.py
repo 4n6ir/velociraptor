@@ -1,6 +1,8 @@
 from aws_cdk import (
+    RemovalPolicy,
     Stack,
     aws_ec2 as _ec2,
+    aws_s3 as _s3,
     aws_ssm as _ssm
 )
 
@@ -10,6 +12,19 @@ class VelociraptorStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+    ### S3 ###
+
+        bucket = _s3.Bucket(
+            self, 'bucket',
+            bucket_name = 'raptordistributor',
+            encryption = _s3.BucketEncryption.S3_MANAGED,
+            block_public_access = _s3.BlockPublicAccess.BLOCK_ALL,
+            removal_policy = RemovalPolicy.DESTROY,
+            auto_delete_objects = True,
+            enforce_ssl = True,
+            versioned = False
+        )
 
     ### VPC ###
 
@@ -110,9 +125,12 @@ class VelociraptorStack(Stack):
             self, 'sg',
             vpc = vpc,
             allow_all_outbound = True,
-            description = 'Outbount Internet Access',
-            security_group_name = 'Outbount Internet Access'
+            description = 'Velociraptor',
+            security_group_name = 'Velociraptor'
         )
+
+        sg.add_ingress_rule(_ec2.Peer.any_ipv4(), _ec2.Port.tcp(80), 'HTTP')
+        sg.add_ingress_rule(_ec2.Peer.any_ipv4(), _ec2.Port.tcp(443), 'HTTPS')
 
         sgparameter = _ssm.StringParameter(
             self, 'sgparameter',
@@ -133,5 +151,13 @@ class VelociraptorStack(Stack):
             description = 'Static EIP Address',
             parameter_name = '/network/eip',
             string_value = eip.attr_allocation_id,
+            tier = _ssm.ParameterTier.STANDARD
+        )
+
+        ipparameter = _ssm.StringParameter(
+            self, 'ipparameter',
+            description = 'Static IP Address',
+            parameter_name = '/network/ip',
+            string_value = eip.attr_public_ip,
             tier = _ssm.ParameterTier.STANDARD
         )
