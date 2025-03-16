@@ -8,7 +8,7 @@ from aws_cdk import (
 
 from constructs import Construct
 
-class VelociraptorHost(Stack):
+class VelociraptorUbuntu(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -24,27 +24,17 @@ class VelociraptorHost(Stack):
 
         azid = _ssm.StringParameter.from_string_parameter_attributes(
             self, 'azid',
-            parameter_name = '/network/az'
-        )
-
-        eipid = _ssm.StringParameter.from_string_parameter_attributes(
-            self, 'eipid',
-            parameter_name = '/network/eip'
+            parameter_name = '/network/publiczone'
         )
 
         rtbid = _ssm.StringParameter.from_string_parameter_attributes(
             self, 'rtbid',
-            parameter_name = '/network/rtb'
-        )
-
-        sgid = _ssm.StringParameter.from_string_parameter_attributes(
-            self, 'sgid',
-            parameter_name = '/network/sg'
+            parameter_name = '/network/publicroute'
         )
 
         subid = _ssm.StringParameter.from_string_parameter_attributes(
             self, 'subid',
-            parameter_name = '/network/subnet'
+            parameter_name = '/network/publicsubnet'
         )
 
         vpcid = _ssm.StringParameter.from_string_parameter_attributes(
@@ -70,10 +60,19 @@ class VelociraptorHost(Stack):
 
     ### SG ###
 
-        sg = _ec2.SecurityGroup.from_security_group_id(
+        sg = _ec2.SecurityGroup(
             self, 'sg',
-            security_group_id = sgid.string_value,
-            mutable = False
+            vpc = vpc,
+            allow_all_outbound = True,
+            allow_all_ipv6_outbound = True,
+            description = 'Ubuntu Raptor',
+            security_group_name = 'Ubuntu Raptor'
+        )
+
+        sg.add_ingress_rule(
+            _ec2.Peer.prefix_list('pl-09f90e410b133fe9f'),
+            _ec2.Port.SSH,
+            'IPv6 EC2 Instance Connect'
         )
 
     ### AMI ###
@@ -115,7 +114,7 @@ class VelociraptorHost(Stack):
 
         instance = _ec2.Instance(
             self, 'instance',
-            instance_type = _ec2.InstanceType('t4g.small'),
+            instance_type = _ec2.InstanceType('t4g.nano'),
             machine_image = ubuntu,
             vpc = vpc,
             role = role,
@@ -126,24 +125,8 @@ class VelociraptorHost(Stack):
                 _ec2.BlockDevice(
                     device_name = '/dev/sda1',
                     volume = _ec2.BlockDeviceVolume.ebs(
-                        20, encrypted = True
+                        10, encrypted = True
                     )
                 )
             ]
-        )
-
-        parameter = _ssm.StringParameter(
-            self, 'parameter',
-            description = 'EC2 Instance ID',
-            parameter_name = '/network/ec2',
-            string_value = instance.instance_id,
-            tier = _ssm.ParameterTier.STANDARD
-        )
-
-    ### EIP ###
-            
-        associate = _ec2.CfnEIPAssociation(
-            self, 'associate',
-            allocation_id = eipid.string_value,
-            instance_id = instance.instance_id,
         )
