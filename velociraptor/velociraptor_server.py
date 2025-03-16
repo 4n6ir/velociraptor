@@ -176,7 +176,7 @@ class VelociraptorServer(Stack):
             self, 'aaarecord',
             zone = hostzone,
             target = _route53.RecordTarget.from_ip_addresses(
-                '2600:1f18:34d5:8d00:7bab:4e9e:3aea:beb3'
+                '2600:1f18:34d5:8d00:fab:897a:5878:c0a4'
             ),
             record_name = 'velociraptor.lukach.net'
         )
