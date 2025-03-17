@@ -16,7 +16,8 @@
 3. ```./velociraptor-v0.74.0-rc1-linux-arm64 --config client.config.yaml debian client```
 4. ```./velociraptor-v0.74.0-rc1-linux-arm64 --config client.config.yaml rpm client```
 5. ```dpkg -i velociraptor_client_0.74.0.rc1_arm64.deb```
-6. ```systemctl status velociraptor_client.service```
+6. ```rpm -i velociraptor_client_0.74.0.rc1_aarch64.rpm```
+7. ```systemctl status velociraptor_client.service```
 
 ### Reference
 

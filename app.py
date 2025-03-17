@@ -3,11 +3,35 @@ import os
 
 import aws_cdk as cdk
 
+from velociraptor.velociraptor_amazon import VelociraptorAmazon
+from velociraptor.velociraptor_microsoft import VelociraptorMicrosoft
 from velociraptor.velociraptor_network import VelociraptorNetwork
 from velociraptor.velociraptor_server import VelociraptorServer
 from velociraptor.velociraptor_ubuntu import VelociraptorUbuntu
 
 app = cdk.App()
+
+VelociraptorAmazon(
+    app, 'VelociraptorAmazon',
+    env = cdk.Environment(
+        account = os.getenv('CDK_DEFAULT_ACCOUNT'),
+        region = 'us-east-1'
+    ),
+    synthesizer = cdk.DefaultStackSynthesizer(
+        qualifier = '4n6ir'
+    )
+)
+
+VelociraptorMicrosoft(
+    app, 'VelociraptorMicrosoft',
+    env = cdk.Environment(
+        account = os.getenv('CDK_DEFAULT_ACCOUNT'),
+        region = 'us-east-1'
+    ),
+    synthesizer = cdk.DefaultStackSynthesizer(
+        qualifier = '4n6ir'
+    )
+)
 
 VelociraptorNetwork(
     app, 'VelociraptorNetwork',
