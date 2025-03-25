@@ -1,4 +1,4 @@
-name: raptor
+name: velociraptor
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on:
-      - codebuild-raptor-${{ github.run_id }}-${{ github.run_attempt }}
+      - codebuild-velociraptor-${{ github.run_id }}-${{ github.run_attempt }}
     permissions:
       id-token: write
       contents: read
