@@ -1,0 +1,28 @@
+name: raptor
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron:  '0 2 1 * *'
+jobs:
+  deploy:
+    runs-on:
+      - codebuild-raptor-${{ github.run_id }}-${{ github.run_attempt }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ROLE }}
+          aws-region: us-east-1
+      - run: npm install -g aws-cdk
+      - run: npm install -g aws-cdk-lib
+      - run: python -m pip install --upgrade pip
+      - run: pip install -r requirements.txt --upgrade
+      - run: cdk deploy VelociraptorNetwork --require-approval never
+       - run: cdk deploy VelociraptorServer --require-approval never
