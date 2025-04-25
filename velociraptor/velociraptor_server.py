@@ -86,7 +86,7 @@ class VelociraptorServer(Stack):
 
         ubuntu = _ec2.MachineImage.generic_linux(
             {
-                'us-east-1': 'ami-0a7a4e87939439934' # Published: 2025-01-15
+                'us-east-1': 'ami-0c4e709339fa8521a' # Published: 2025-03-05
             }
         )
 
@@ -121,7 +121,7 @@ class VelociraptorServer(Stack):
 
         instance = _ec2.Instance(
             self, 'instance',
-            instance_type = _ec2.InstanceType('t4g.small'),
+            instance_type = _ec2.InstanceType('t4g.nano'),
             machine_image = ubuntu,
             vpc = vpc,
             role = role,
@@ -132,7 +132,7 @@ class VelociraptorServer(Stack):
                 _ec2.BlockDevice(
                     device_name = '/dev/sda1',
                     volume = _ec2.BlockDeviceVolume.ebs(
-                        30, encrypted = True
+                        10, encrypted = True
                     )
                 )
             ]
@@ -176,7 +176,7 @@ class VelociraptorServer(Stack):
             self, 'aaarecord',
             zone = hostzone,
             target = _route53.RecordTarget.from_ip_addresses(
-                '2600:1f18:34d5:8d00:fab:897a:5878:c0a4'
+                '2600:1f18:34d5:8d00:24ba:561e:d913:40dc'
             ),
             record_name = 'velociraptor.lukach.net'
         )
