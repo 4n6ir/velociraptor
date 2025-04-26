@@ -17,15 +17,9 @@ class VelociraptorServer(Stack):
 
     ### S3 ###
 
-        bucket = _s3.Bucket(
+        bucket = _s3.Bucket.from_bucket_attributes(
             self, 'bucket',
             bucket_name = 'raptordistributor',
-            encryption = _s3.BucketEncryption.S3_MANAGED,
-            block_public_access = _s3.BlockPublicAccess.BLOCK_ALL,
-            removal_policy = RemovalPolicy.DESTROY,
-            auto_delete_objects = True,
-            enforce_ssl = True,
-            versioned = False
         )
 
     ### SSM ###
@@ -176,7 +170,7 @@ class VelociraptorServer(Stack):
             self, 'aaarecord',
             zone = hostzone,
             target = _route53.RecordTarget.from_ip_addresses(
-                '2600:1f18:34d5:8d00:24ba:561e:d913:40dc'
+                '2600:1f18:34d5:8d00:dc38:9749:d6ed:3258'
             ),
             record_name = 'velociraptor.lukach.net'
         )

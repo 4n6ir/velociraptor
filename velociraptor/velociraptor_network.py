@@ -1,4 +1,5 @@
 from aws_cdk import (
+    RemovalPolicy,
     Stack,
     aws_ec2 as _ec2,
     aws_s3 as _s3,
@@ -11,6 +12,19 @@ class VelociraptorNetwork(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+    ### S3 ###
+
+        bucket = _s3.Bucket(
+            self, 'bucket',
+            bucket_name = 'raptordistributor',
+            encryption = _s3.BucketEncryption.S3_MANAGED,
+            block_public_access = _s3.BlockPublicAccess.BLOCK_ALL,
+            removal_policy = RemovalPolicy.DESTROY,
+            auto_delete_objects = True,
+            enforce_ssl = True,
+            versioned = False
+        )
 
     ### VPC ###
 
